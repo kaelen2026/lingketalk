@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
+import { Arrow } from "./arrow";
 
 export function SubscriptionForm() {
   const [message, setMessage] = useState("");
@@ -34,9 +35,7 @@ export function SubscriptionForm() {
         />
         <button type="submit">
           加入订阅
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M5 12h14M14 6l6 6-6 6" />
-          </svg>
+          <Arrow />
         </button>
       </form>
       <p className="privacy" aria-live="polite">

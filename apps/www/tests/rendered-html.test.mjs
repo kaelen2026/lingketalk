@@ -88,6 +88,26 @@ test("renders the about and subscribe sections", () => {
   assert.match(html, /加入订阅/);
 });
 
+test("keeps banner and contentinfo outside the main landmark", () => {
+  const main = html.match(/<main\b[^>]*>([\s\S]*)<\/main>/);
+  assert.ok(main, "the page must render a <main> landmark");
+
+  // Nesting <header>/<footer> inside <main> strips their banner and
+  // contentinfo roles, so screen-reader landmark navigation loses them.
+  assert.doesNotMatch(main[1], /<header\b/);
+  assert.doesNotMatch(main[1], /<footer\b/);
+
+  // They still have to be on the page — as siblings of <main>, from the layout.
+  assert.match(html, /<header\b/);
+  assert.match(html, /<footer\b/);
+});
+
+test("anchors the wordmark to the top of the page", () => {
+  // Both wordmarks point at #top; the target must be the header itself, not
+  // the hero below it, or "back to top" scrolls the header out of view.
+  assert.match(html, /<header\b[^>]*id="top"/);
+});
+
 test("emits share metadata for the production origin", () => {
   assert.match(html, /property="og:title"/);
   assert.match(html, /https:\/\/lingketalk\.com/);
