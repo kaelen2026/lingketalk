@@ -1,4 +1,20 @@
-@import "tailwindcss";
+/* Tailwind is here for the reset and the theme variables, not for utilities.
+   This stylesheet is hand-written with semantic class names, so the utilities
+   layer is deliberately left out — `@import "tailwindcss"` would pull it in.
+
+   It was not merely unused. Tailwind scans source files for anything that looks
+   like a utility candidate, so bare words in unrelated positions were being
+   compiled into real rules: `position: relative` in this file produced
+   `.relative`, `<div hidden>` produced `.hidden`, and `placeholder="blur"` on a
+   next/image produced `.blur` plus the whole `--tw-*` filter scaffolding. Six
+   dead rules nobody could reference by name, because no JSX uses them.
+
+   `.sr-only` is the one utility name the markup does use, and it is defined by
+   hand further down this file. Unlayered rules outrank layered ones, so that
+   definition was already the one in effect. */
+@layer theme, base;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
 
 :root {
   --paper: #f7f5f0;
