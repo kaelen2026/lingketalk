@@ -45,9 +45,15 @@ pnpm test          # requires a prior `pnpm build`
   (see above).
   - The hero, editorial, and about images are `import`ed rather than referenced
     by URL string. That makes a wrong path a build error instead of a runtime
-    404, lets `placeholder="blur"` generate its own preview, and moves the
-    original under `/_next/static/media/<name>.<hash>.png` so it can be cached
-    immutably. They keep `fill`, because the containers define the box.
+    404, and moves the original under `/_next/static/media/<name>.<hash>.png` so
+    it can be cached immutably. They keep `fill`, because the containers define
+    the box.
+  - No `placeholder="blur"`: three inline base64 previews cost ~380 bytes
+    gzipped in every cold response, and the containers already reserve their
+    space, so nothing shifts while the images load. A test asserts they stay out.
+  - The hashed URLs are not free either — they are far longer than
+    `/images/hero-book.png` and appear nine times per image in `srcSet`, which
+    is ~845 bytes gzipped. That is the price of immutable caching, and it stays.
   - `og.png` stays a plain URL reference: share metadata needs a stable path.
 - `tests/` — boots `next start` against the real build and asserts the rendered
   HTML, so it catches metadata and server-render regressions.

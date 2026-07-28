@@ -29,7 +29,6 @@ export function Hero() {
           alt="书页形成的抽象黑白影像"
           fill
           priority
-          placeholder="blur"
           sizes="(max-width: 800px) 100vw, 48vw"
         />
         <div className="blue-bar" />
