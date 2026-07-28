@@ -1,36 +1,61 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { Arrow } from "./arrow";
+import {
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_ORIGIN,
+  SITE_SHARE_DESCRIPTION,
+  SITE_TITLE,
+} from "./site";
 
 const geist = Geist({
   variable: "--font-geist",
   subsets: ["latin"],
 });
 
+/**
+ * No `icons` entry: `app/icon.svg` is picked up by the file convention, which
+ * emits the link tag with a content hash so the icon busts its own cache.
+ */
 export const metadata: Metadata = {
-  metadataBase: new URL("https://lingketalk.com"),
-  title: "Lingke Talk｜在 AI 时代，保持人的判断",
-  description: "灵客关于科技、AI 与人的独立观察：AI 洞察、工具实践与人物对话。",
+  metadataBase: new URL(SITE_ORIGIN),
+  // `default` is the landing page's own title; `template` frames every other
+  // route's, so they only have to name themselves.
+  title: {
+    default: SITE_TITLE,
+    template: `%s｜${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
   openGraph: {
-    title: "Lingke Talk｜在 AI 时代，保持人的判断",
-    description: "AI 洞察、工具实践与人物对话。",
-    url: "https://lingketalk.com",
-    siteName: "Lingke Talk",
+    title: SITE_TITLE,
+    description: SITE_SHARE_DESCRIPTION,
+    url: SITE_ORIGIN,
+    siteName: SITE_NAME,
     locale: "zh_CN",
     type: "website",
     images: [{ url: "/og.png", width: 1731, height: 909 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lingke Talk｜在 AI 时代，保持人的判断",
-    description: "AI 洞察、工具实践与人物对话。",
+    title: SITE_TITLE,
+    description: SITE_SHARE_DESCRIPTION,
     images: ["/og.png"],
   },
-  icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-  },
+};
+
+/**
+ * Separate from `metadata` — Next split viewport out of it in 14.
+ *
+ * `themeColor` has to restate `--paper` from `globals.css` as a literal, since
+ * a custom property is not readable from here. Keep the two in step.
+ * `colorScheme` is declared because the design is light-only; without it a
+ * browser may try to force-darken form controls.
+ */
+export const viewport: Viewport = {
+  themeColor: "#f7f5f0",
+  colorScheme: "light",
 };
 
 /**

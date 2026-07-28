@@ -18,15 +18,25 @@ pnpm test          # requires a prior `pnpm build`
 ## Shape
 
 - `app/` — App Router routes. The landing page is a single static route.
-  - `layout.tsx` holds the site metadata (title, Open Graph, Twitter card) and
-    the shared chrome: `<header>` and `<footer>` render here, as siblings of
-    `<main>`, so they keep their banner and contentinfo landmark roles.
+  - `layout.tsx` holds the site metadata (title template, Open Graph, Twitter
+    card), the `viewport` export, and the shared chrome: `<header>` and
+    `<footer>` render here, as siblings of `<main>`, so they keep their banner
+    and contentinfo landmark roles.
   - `page.tsx` is a server component and renders only `<main>`;
     `subscription-form.tsx` is the only client component.
+  - `not-found.tsx` is the 404. It renders inside the layout, so it gets the
+    chrome for free, and names itself through the layout's title template.
+  - `robots.ts`, `sitemap.ts`, `icon.svg` — Next.js file conventions, emitted
+    as `/robots.txt`, `/sitemap.xml`, and a content-hashed `/icon.svg`. All
+    four routes prerender static.
+  - `site.ts` holds the facts several of those files must agree on. The origin
+    lives here rather than in `metadataBase` alone, because robots.txt and the
+    sitemap have to emit absolute URLs.
   - `arrow.tsx` wraps the single icon the site uses.
 - `app/globals.css` — the whole stylesheet, hand-written on top of Tailwind v4.
 - `public/` — static assets. The hero, editorial, and about images are served
-  through `next/image` and optimized by Vercel at request time.
+  through `next/image` and optimized by Vercel at request time. The site icon
+  is *not* here; it is `app/icon.svg` (see above).
 - `tests/` — boots `next start` against the real build and asserts the rendered
   HTML, so it catches metadata and server-render regressions.
 
