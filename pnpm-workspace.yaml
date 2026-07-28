@@ -1,0 +1,24 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# pnpm 10 blocks lifecycle scripts by default. These fetch or link native
+# binaries (libvips for next/image, the oxc resolver behind eslint's import
+# plugin) and are non-functional without their install step.
+onlyBuiltDependencies:
+  - sharp
+  - unrs-resolver
+
+# Single source of truth for versions shared across workspace packages.
+# Members reference these with `"react": "catalog:"` instead of a literal
+# version, so a bump here lands everywhere at once.
+catalog:
+  "@types/node": 24.13.3
+  "@types/react": 19.2.14
+  "@types/react-dom": 19.2.3
+  eslint: 9.39.4
+  eslint-config-next: 16.2.6
+  next: 16.2.6
+  react: 19.2.6
+  react-dom: 19.2.6
+  typescript: 5.9.3

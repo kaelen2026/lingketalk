@@ -1,0 +1,87 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.5/schema.json",
+  // Biome owns formatting and the language-agnostic lint rules for the whole
+  // workspace; it runs once from the repo root instead of per-package, so it
+  // stays out of the Turborepo `lint` task (that one is ESLint's, see below).
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    // Reuse .gitignore instead of restating build output here.
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      // Lockfiles are tool-owned.
+      "!**/pnpm-lock.yaml"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    // Existing sources are 2-space / 80-column; Biome defaults to tabs.
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semicolons": "always"
+    }
+  },
+  "json": {
+    "formatter": {
+      // Biome force-expands every array in a package.json (npm's own style).
+      // "auto" follows what the file already does, so the workspace keeps its
+      // one-line `"files": [...]` entries.
+      "expand": "auto"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "complexity": {
+        // globals.css needs !important for the prefers-reduced-motion reset,
+        // which is the standard pattern rather than a cascade smell.
+        "noImportantStyles": "off"
+      },
+      "style": {
+        // Fires on selector pairs that never match the same element
+        // (`.about-copy > span` vs `.pillars article > span`) — noise on a
+        // hand-written stylesheet.
+        "noDescendingSpecificity": "off"
+      }
+    },
+    // Next.js and React specifics stay with eslint-config-next, which is the
+    // authority on them. Biome auto-enables these domains when it detects the
+    // dependencies, so they have to be switched off explicitly or every
+    // hook/component finding gets reported twice.
+    "domains": {
+      "next": "none",
+      "react": "none"
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "overrides": [
+    {
+      // Standalone icon assets rather than inline JSX; a <title> in a file
+      // referenced by src= is never announced. The rule still guards JSX.
+      "includes": ["**/*.svg"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noSvgWithoutTitle": "off"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@lingketalk/www",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "node --test tests/rendered-html.test.mjs",
+    "lint": "eslint .",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@lingketalk/eslint-config": "workspace:*",
+    "@lingketalk/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "eslint": "catalog:",
+    "tailwindcss": "4.2.1",
+    "typescript": "catalog:"
+  }
+}
