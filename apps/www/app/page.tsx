@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Arrow } from "./arrow";
 import { SubscriptionForm } from "./subscription-form";
 
 const pillars = [
@@ -19,33 +20,10 @@ const pillars = [
   },
 ];
 
-function Arrow() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path d="M5 12h14M14 6l6 6-6 6" />
-    </svg>
-  );
-}
-
 export default function Home() {
   return (
     <main>
-      <header className="site-header shell">
-        <a className="wordmark" href="#top" aria-label="Lingke Talk 首页">
-          LINGKE TALK
-        </a>
-        <nav aria-label="主导航">
-          <a href="#insight">洞察</a>
-          <a href="#practice">实践</a>
-          <a href="#about">关于</a>
-        </nav>
-        <a className="button button-small" href="#subscribe">
-          订阅 <span>Lingke Talk</span>
-          <Arrow />
-        </a>
-      </header>
-
-      <section className="hero shell" id="top">
+      <section className="hero shell">
         <div className="hero-copy">
           <h1>
             在 AI 时代，
@@ -77,7 +55,7 @@ export default function Home() {
         </div>
         <div className="hero-index" aria-hidden="true">
           <span>01</span>
-          <i />
+          <span className="rule" />
           <span>向下探索</span>
         </div>
       </section>
@@ -103,7 +81,7 @@ export default function Home() {
             <article key={pillar.number}>
               <span>{pillar.number}</span>
               <h3>{pillar.title}</h3>
-              <i />
+              <span className="rule" />
               <p>{pillar.description}</p>
               <a href="#subscribe">
                 查看内容
@@ -149,18 +127,6 @@ export default function Home() {
           <SubscriptionForm />
         </div>
       </section>
-
-      <footer className="shell">
-        <div>
-          <a className="wordmark" href="#top">
-            LINGKE TALK
-          </a>
-          <p>科技在变，人的判断更重要。</p>
-        </div>
-        <div className="socials">
-          <span>社交账号即将上线</span>
-        </div>
-      </footer>
     </main>
   );
 }

@@ -18,9 +18,12 @@ pnpm test          # requires a prior `pnpm build`
 ## Shape
 
 - `app/` — App Router routes. The landing page is a single static route.
-  - `layout.tsx` holds the site metadata (title, Open Graph, Twitter card).
-  - `page.tsx` is a server component; `subscription-form.tsx` is the only
-    client component.
+  - `layout.tsx` holds the site metadata (title, Open Graph, Twitter card) and
+    the shared chrome: `<header>` and `<footer>` render here, as siblings of
+    `<main>`, so they keep their banner and contentinfo landmark roles.
+  - `page.tsx` is a server component and renders only `<main>`;
+    `subscription-form.tsx` is the only client component.
+  - `arrow.tsx` wraps the single icon the site uses.
 - `app/globals.css` — the whole stylesheet, hand-written on top of Tailwind v4.
 - `public/` — static assets. The hero, editorial, and about images are served
   through `next/image` and optimized by Vercel at request time.
@@ -33,3 +36,8 @@ The subscription form is currently client-side only: it validates the address
 and acknowledges the intent without persisting anything. Wiring it to a real
 mailing list means adding a server action or route handler plus a store — there
 is no database in this project today.
+
+Icons come from [lucide-react](https://lucide.dev); do not hand-roll SVG paths.
+Their size, stroke, and colour stay in the bare `svg` rule in `globals.css` —
+lucide emits those as presentation attributes, which CSS outranks, so the
+stylesheet keeps one house style for every icon.

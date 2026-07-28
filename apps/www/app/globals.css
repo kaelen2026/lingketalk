@@ -37,8 +37,12 @@ input {
   font: inherit;
 }
 
+/* Lucide ships width/height/stroke-width as presentation attributes; CSS
+   outranks those, so the icons inherit this house style. `height` is pinned
+   because lucide emits height="24" — width alone would render 20x24. */
 svg {
   width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;
@@ -226,7 +230,7 @@ nav a:focus-visible::after {
   letter-spacing: 0.18em;
 }
 
-.hero-index i {
+.hero-index .rule {
   width: 180px;
   height: 1px;
   background: var(--line);
@@ -296,7 +300,8 @@ nav a:focus-visible::after {
   padding-left: 48px;
 }
 
-.pillars article > span {
+/* The number, not the decorative rule that follows the heading. */
+.pillars article > span:first-child {
   font-size: 13px;
 }
 
@@ -306,7 +311,7 @@ nav a:focus-visible::after {
   font-weight: 540;
 }
 
-.pillars i {
+.pillars .rule {
   width: 32px;
   height: 1px;
   background: var(--ink);
