@@ -140,7 +140,7 @@ test("titles the 404 through the layout's title template", async () => {
   assert.match(html, /<title>Lingke Talk｜在 AI 时代，保持人的判断<\/title>/);
 });
 
-test("routes the content images through hashed assets with a blur preview", () => {
+test("routes the content images through hashed static assets", () => {
   const optimized = [
     ...html.matchAll(/src="\/_next\/image\?url=([^"&]*)/g),
   ].map((match) => match[1]);
@@ -151,11 +151,14 @@ test("routes the content images through hashed assets with a blur preview", () =
   for (const url of optimized) {
     assert.match(url, /%2F_next%2Fstatic%2Fmedia%2F/);
   }
+});
 
-  // And each one ships an inline low-res preview for the load.
-  const previews =
-    html.match(/background-image:url\(&quot;data:image\/svg\+xml/g) ?? [];
-  assert.equal(previews.length, 3);
+test("inlines no image previews", () => {
+  // `placeholder="blur"` was dropped: three base64 previews cost ~380 bytes
+  // gzipped in every cold response, and the containers already reserve their
+  // space, so nothing shifts while the images load. Guards against it creeping
+  // back in without that cost being reconsidered.
+  assert.doesNotMatch(html, /background-image:url\(&quot;data:image\/svg\+xml/);
 });
 
 test("serves robots.txt pointing at the sitemap", async () => {

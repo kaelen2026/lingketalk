@@ -9,7 +9,6 @@ export function About() {
           src={aboutLingke}
           alt="灵客的匿名黑白侧影"
           fill
-          placeholder="blur"
           sizes="(max-width: 800px) 100vw, 48vw"
         />
       </div>

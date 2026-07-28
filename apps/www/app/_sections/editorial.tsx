@@ -35,7 +35,6 @@ export function Editorial() {
             src={editorialArchitecture}
             alt="黑白建筑曲线"
             fill
-            placeholder="blur"
             sizes="(max-width: 800px) 100vw, 45vw"
           />
         </div>
