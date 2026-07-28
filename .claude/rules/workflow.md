@@ -68,7 +68,26 @@ commit，每个 commit 也必须满足第 8 节的原子性要求，且任一中
 - 改动必须通过 Pull Request 合入 `main`，并通过 CI 质量门禁。
 - 提交信息遵循 Conventional Commits，由 Husky `commit-msg` 和 commitlint 强制检查。
 
-> 例外：仅当用户明确要求「就在 main 上提交」时才可破例。
+**没有例外。** 这不只是约定，GitHub 端有名为 `main protection` 的 ruleset 在强制执行，
+`bypass_actors` 为空，仓库 owner 也不能绕过：
+
+| 规则 | 效果 |
+| --- | --- |
+| `pull_request`（`required_approving_review_count: 0`） | 必须走 PR；不要求审批，单人仓库才不会把自己锁死 |
+| `required_status_checks: [quality]` | CI 的 `quality` job 必须通过 |
+| `non_fast_forward` | 禁止 force push |
+| `deletion` | 禁止删除 `main` |
+
+所以直推 `main` 会被服务端拒绝，不必依赖自觉。真遇到需要绕过的紧急情况，正确做法是先把该
+ruleset 临时改为 `disabled`、处理完立即恢复，而不是在流程里留一个口子。
+
+注意保护是用 **ruleset** 配置的，不是旧的 branch protection。
+`gh api repos/<owner>/<repo>/branches/main/protection` 查不到它，会返回 404
+`Branch not protected`——那个接口只看旧机制。要查现状用：
+
+```bash
+gh api repos/<owner>/<repo>/rulesets
+```
 
 ## 4. 同步基线并检查现场
 
@@ -237,13 +256,17 @@ Pull Request 描述至少包含：
 git -C ../lingketalk-social-links status --short
 ```
 
-特性合并后，删除 worktree 和本地、远端特性分支：
+远端分支不用手动删：仓库开了 **Automatically delete head branches**，PR 合并后 GitHub 会
+自己删掉它。所以合并后只需清理本地的 worktree 和分支：
 
 ```bash
 git worktree remove ../lingketalk-social-links
 git branch -d feat/social-links
-git push origin --delete feat/social-links
+git fetch origin --prune
 git worktree prune
 ```
+
+`--prune` 用来清掉已经在远端消失的追踪引用。若远端分支意外还在（例如 PR 是关闭而非合并的），
+再补一句 `git push origin --delete feat/social-links`。
 
 分支不长期保留。删除前若发现未提交内容，应先确认并处理，不得强制丢弃。
