@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Arrow } from "@/app/arrow";
+import editorialArchitecture from "@/public/images/editorial-architecture.png";
 
 /** The three editorial pillars the spec fixes: insight, practice, dialogue. */
 const pillars = [
@@ -31,9 +32,10 @@ export function Editorial() {
         </div>
         <div className="architecture">
           <Image
-            src="/images/editorial-architecture.png"
+            src={editorialArchitecture}
             alt="黑白建筑曲线"
             fill
+            placeholder="blur"
             sizes="(max-width: 800px) 100vw, 45vw"
           />
         </div>
