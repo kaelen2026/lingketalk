@@ -22,8 +22,13 @@ pnpm test          # requires a prior `pnpm build`
     card), the `viewport` export, and the shared chrome: `<header>` and
     `<footer>` render here, as siblings of `<main>`, so they keep their banner
     and contentinfo landmark roles.
-  - `page.tsx` is a server component and renders only `<main>`;
-    `subscription-form.tsx` is the only client component.
+  - `page.tsx` is a server component and renders only `<main>`. It is a reading
+    order and nothing else — four section components in sequence.
+  - `_sections/` holds those four: `hero`, `editorial`, `about`, `subscribe`.
+    Each owns its own markup and copy. The leading underscore is Next's private
+    folder convention, so the directory never becomes a route segment. They
+    reach back up through the `@/*` alias rather than `../`.
+  - `subscription-form.tsx` is the only client component.
   - `not-found.tsx` is the 404. It renders inside the layout, so it gets the
     chrome for free, and names itself through the layout's title template.
   - `robots.ts`, `sitemap.ts`, `icon.svg` — Next.js file conventions, emitted
