@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Arrow } from "@/app/arrow";
+import heroBook from "@/public/images/hero-book.png";
 
 export function Hero() {
   return (
@@ -24,10 +25,11 @@ export function Hero() {
       </div>
       <div className="hero-art">
         <Image
-          src="/images/hero-book.png"
+          src={heroBook}
           alt="书页形成的抽象黑白影像"
           fill
           priority
+          placeholder="blur"
           sizes="(max-width: 800px) 100vw, 48vw"
         />
         <div className="blue-bar" />

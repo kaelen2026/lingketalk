@@ -39,9 +39,14 @@ pnpm test          # requires a prior `pnpm build`
     sitemap have to emit absolute URLs.
   - `arrow.tsx` wraps the single icon the site uses.
 - `app/globals.css` — the whole stylesheet, hand-written on top of Tailwind v4.
-- `public/` — static assets. The hero, editorial, and about images are served
-  through `next/image` and optimized by Vercel at request time. The site icon
-  is *not* here; it is `app/icon.svg` (see above).
+- `public/` — static assets. The site icon is *not* here; it is `app/icon.svg`
+  (see above).
+  - The hero, editorial, and about images are `import`ed rather than referenced
+    by URL string. That makes a wrong path a build error instead of a runtime
+    404, lets `placeholder="blur"` generate its own preview, and moves the
+    original under `/_next/static/media/<name>.<hash>.png` so it can be cached
+    immutably. They keep `fill`, because the containers define the box.
+  - `og.png` stays a plain URL reference: share metadata needs a stable path.
 - `tests/` — boots `next start` against the real build and asserts the rendered
   HTML, so it catches metadata and server-render regressions.
 

@@ -1,13 +1,15 @@
 import Image from "next/image";
+import aboutLingke from "@/public/images/about-lingke.png";
 
 export function About() {
   return (
     <section className="about shell" id="about">
       <div className="about-photo">
         <Image
-          src="/images/about-lingke.png"
+          src={aboutLingke}
           alt="灵客的匿名黑白侧影"
           fill
+          placeholder="blur"
           sizes="(max-width: 800px) 100vw, 48vw"
         />
       </div>

@@ -133,6 +133,24 @@ test("titles the 404 through the layout's title template", async () => {
   assert.match(html, /<title>Lingke Talk｜在 AI 时代，保持人的判断<\/title>/);
 });
 
+test("routes the content images through hashed assets with a blur preview", () => {
+  const optimized = [
+    ...html.matchAll(/src="\/_next\/image\?url=([^"&]*)/g),
+  ].map((match) => match[1]);
+  assert.equal(optimized.length, 3);
+
+  // Static imports move the originals under /_next/static/media with a content
+  // hash, so they can be cached immutably. A public/ path cannot be.
+  for (const url of optimized) {
+    assert.match(url, /%2F_next%2Fstatic%2Fmedia%2F/);
+  }
+
+  // And each one ships an inline low-res preview for the load.
+  const previews =
+    html.match(/background-image:url\(&quot;data:image\/svg\+xml/g) ?? [];
+  assert.equal(previews.length, 3);
+});
+
 test("serves robots.txt pointing at the sitemap", async () => {
   const response = await fetch(`${origin}/robots.txt`);
   assert.equal(response.status, 200);
