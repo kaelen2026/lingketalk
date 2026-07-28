@@ -14,11 +14,22 @@ Setup, commands, layout, and deployment are in `README.md` and
 
 ## Styling is not utility-first
 
-`app/globals.css` is a hand-written stylesheet on top of `@import "tailwindcss"`.
-JSX uses semantic class names (`className="hero-art"`, `.pillars`,
-`.subscribe-inner`) defined in that file. Add styles there; do not reach for
-Tailwind utility classes. Colors and the serif stack come from `:root` custom
-properties (`--paper`, `--ink`, `--blue`, `--serif`).
+`app/globals.css` is a hand-written stylesheet. JSX uses semantic class names
+(`className="hero-art"`, `.pillars`, `.subscribe-inner`) defined in that file.
+Add styles there; do not reach for Tailwind utility classes. Colors and the
+serif stack come from `:root` custom properties (`--paper`, `--ink`, `--blue`,
+`--serif`).
+
+Tailwind is imported for its reset and theme variables only — `theme.css` and
+`preflight.css`, not the utilities layer. **Do not replace that with
+`@import "tailwindcss"`**: the shorthand pulls utilities back in, and Tailwind's
+scanner compiles any bare word that looks like a utility candidate, so
+`position: relative` in the stylesheet, `<div hidden>`, and
+`placeholder="blur"` on a `next/image` each produced a real rule that no JSX
+could reference. A test asserts the utilities layer stays out.
+
+`.sr-only` is the one utility name the markup uses, and it is hand-written in
+that file rather than borrowed from Tailwind.
 
 ## Tests assert server-rendered HTML
 

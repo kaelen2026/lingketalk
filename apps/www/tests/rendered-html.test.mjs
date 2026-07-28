@@ -11,6 +11,9 @@ let server;
 let html;
 // Module-scoped so tests that need a second route can fetch it themselves.
 let origin;
+// The compiled stylesheet. Some regressions — a missing helper class, a
+// utility layer creeping back — are invisible in the rendered markup.
+let css;
 
 /** Ask the OS for a free port so parallel runs don't collide. */
 function freePort() {
@@ -61,6 +64,10 @@ before(async () => {
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   html = await response.text();
+
+  const stylesheet = html.match(/href="(\/_next\/[^"]+\.css)"/)?.[1];
+  assert.ok(stylesheet, "the page must link a compiled stylesheet");
+  css = await (await fetch(`${origin}${stylesheet}`)).text();
 });
 
 after(() => {
@@ -197,6 +204,45 @@ test("declares the paper theme colour and the default viewport", () => {
   assert.match(html, /name="theme-color"/);
   assert.match(html, /content="#f7f5f0"/);
   assert.match(html, /name="viewport"/);
+});
+
+test("keeps the visually-hidden helper the markup relies on", () => {
+  // The subscribe field's label is hidden with .sr-only. Tailwind used to emit
+  // its own copy too, but the utilities layer is deliberately gone, so the
+  // hand-written rule is the only one left — and nothing in the rendered HTML
+  // would reveal its absence.
+  assert.match(html, /class="sr-only"/);
+
+  const rule = css.match(/\.sr-only\{([^}]*)\}/);
+  assert.ok(rule, ".sr-only must be defined in the stylesheet");
+  assert.match(rule[1], /position:absolute/);
+  assert.match(rule[1], /overflow:hidden/);
+});
+
+test("compiles no Tailwind utility layer", () => {
+  // Tailwind is imported for the reset and theme only. Its scanner turns bare
+  // words in unrelated positions into real rules, so `position: relative` in
+  // the stylesheet, `<div hidden>`, and `placeholder="blur"` used to compile
+  // into utilities nothing could reference. Guards against a plain
+  // `@import "tailwindcss"` creeping back.
+  assert.doesNotMatch(css, /@layer utilities/);
+
+  for (const dead of [
+    ".absolute{",
+    ".relative{",
+    ".static{",
+    ".visible{",
+    ".hidden{",
+    ".inline{",
+    ".blur{",
+  ]) {
+    assert.ok(!css.includes(dead), `${dead} should not be compiled`);
+  }
+
+  // The reset and the theme variables it does provide must survive.
+  assert.match(css, /@layer base\{/);
+  assert.match(css, /@layer theme\{/);
+  assert.match(css, /--default-font-family/);
 });
 
 test("drops every trace of the Cloudflare starter template", () => {

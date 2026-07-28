@@ -38,7 +38,9 @@ pnpm test          # requires a prior `pnpm build`
     lives here rather than in `metadataBase` alone, because robots.txt and the
     sitemap have to emit absolute URLs.
   - `arrow.tsx` wraps the single icon the site uses.
-- `app/globals.css` — the whole stylesheet, hand-written on top of Tailwind v4.
+- `app/globals.css` — the whole stylesheet, hand-written. Tailwind v4 supplies
+  the reset and theme variables only; the utilities layer is left out on
+  purpose. See the styling section in the root `CLAUDE.md`.
 - `public/` — static assets. The site icon is *not* here; it is `app/icon.svg`
   (see above).
   - The hero, editorial, and about images are `import`ed rather than referenced
