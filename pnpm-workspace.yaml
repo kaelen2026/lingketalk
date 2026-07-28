@@ -14,13 +14,13 @@ onlyBuiltDependencies:
 # version, so a bump here lands everywhere at once.
 catalog:
   "@types/node": 24.13.3
-  "@types/react": 19.2.14
+  "@types/react": 19.2.17
   "@types/react-dom": 19.2.3
   eslint: 9.39.4
   eslint-config-next: 16.2.12
   next: 16.2.12
-  react: 19.2.6
-  react-dom: 19.2.6
+  react: 19.2.8
+  react-dom: 19.2.8
   typescript: 5.9.3
 
 # 强制提升传递依赖，消除 `pnpm audit` 告警。上游自己修不掉，只能在这里覆盖：
