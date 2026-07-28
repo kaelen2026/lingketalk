@@ -17,8 +17,37 @@ catalog:
   "@types/react": 19.2.14
   "@types/react-dom": 19.2.3
   eslint: 9.39.4
-  eslint-config-next: 16.2.6
-  next: 16.2.6
+  eslint-config-next: 16.2.12
+  next: 16.2.12
   react: 19.2.6
   react-dom: 19.2.6
   typescript: 5.9.3
+
+# 强制提升传递依赖，消除 `pnpm audit` 告警。上游自己修不掉，只能在这里覆盖：
+#
+# - postcss：next 在清单里写死 `"postcss": "8.4.31"`，升 next 也带不上来。
+#   GHSA 要求 >=8.5.18（sourceMappingURL 路径穿越 / 任意文件读取 / stringify XSS）。
+#   tailwindcss 那条链路本来就是 8.5.23，提上来后全树统一。
+# - sharp：next 声明 `^0.34.5`，够不到修掉 libvips CVE 的 0.35.0。
+#   `app/page.tsx` 真的在用 next/image，这条不是纸面风险。
+#
+# 每次升 next 后都应复查这两条是否还需要，上游跟上了就删掉。
+overrides:
+  postcss: ">=8.5.18"
+  sharp: ">=0.35.0"
+
+# GHSA-mh99-v99m-4gvg（brace-expansion DoS，high）暂时无解，显式忽略，让
+# `pnpm audit` 干净到「有输出就是真出事了」。已经试过的两条路都不通：
+#
+# - override 到 >=5.0.8：5.x 是 ESM 具名导出，而 minimatch@3 期望
+#   `module.exports = expand`，eslint 直接崩在 `expand is not a function`。
+# - 升 eslint 10（内部已换 minimatch@10）：minimatch@3 转而由
+#   eslint-config-next -> eslint-plugin-import@2.32.0 拉进来，告警照旧；
+#   且 import / jsx-a11y / react 三个插件的 peer 都还没支持 eslint 10。
+#
+# 暴露面：只在 lint 链路，触发条件是攻击者能控制 glob 模式，也就是能改 eslint
+# 配置——真到那一步，这条告警不是最要紧的问题。
+# 复查条件：eslint-plugin-import 支持 eslint 10 之后，重升 eslint 并删掉本段。
+auditConfig:
+  ignoreGhsas:
+    - GHSA-mh99-v99m-4gvg
